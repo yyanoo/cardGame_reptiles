@@ -3,9 +3,9 @@ import { load } from 'cheerio';
 
 async function scrapeCardInfo(n) {
     try {
-        const title = 'OS02/R02';
-        const url = `https://ws-rose.com/cardlist/?cardno=${title}-${n}`; 
-        const cardP = `https://ws-rose.com/wordpress/wp-content/images/cardlist/os02/r02/os02_r02_${n}.png`
+        const title = '01';
+        const url = `https://ws-rose.com/cardlist/?cardno=OS${title}/R${title}-${n}`; 
+        const cardP = `https://ws-rose.com/wordpress/wp-content/images/cardlist/os${title}/r${title}/os${title}_r${title}_${n}.png`
 
         const { data: html } = await axios.get(url);
         const $ = load(html);
@@ -17,9 +17,9 @@ async function scrapeCardInfo(n) {
         const cost = $('dt:contains("コスト")').next('dd').find('p').html();
         const power = $('dt:contains("パワー")').next('dd').find('p').html();
 
-        const effectHtml = $('dt:contains("テキスト")').next('dd').find('p').html();
-        const effectText = effectHtml?.replace(/<br\s*\/?>/gi, '\n').trim();
-        const [effect1, effect2 ,effect3] = effectText.split('\n', 3);
+        const effect = $('dt:contains("テキスト")').next('dd').find('p').html();
+        const effectList = effect.replace(/<br\s*\/?>/gi, '/n').trim();
+        const [effect1,effect2,effect3] = effectList.split('/n',3);
 
         const cardInfo = {
             "卡號": cardNumber,
@@ -39,4 +39,4 @@ async function scrapeCardInfo(n) {
     }
 }
 
-scrapeCardInfo('100')
+scrapeCardInfo('020')
