@@ -3,10 +3,10 @@ import { load } from 'cheerio';
 import { writeFile } from 'fs/promises';
 
 let check = true;
+const title = '02';
 
 async function scrapeCardInfo(n) {
     try {
-        const title = '01';
         const url = `https://ws-rose.com/cardlist/?cardno=OS${title}/R${title}-${n}`;
         const cardP = `https://ws-rose.com/wordpress/wp-content/images/cardlist/os${title}/r${title}/os${title}_r${title}_${n}.png`;
 
@@ -17,31 +17,25 @@ async function scrapeCardInfo(n) {
         if (!cardNumber) {
             check = false;
         }
-
-        const cardName = $('.item-Heading').text().trim();
-        const color = $('img.color').attr('alt');
-        const cardLvl = $('dt:contains("レベル")').next('dd').find('p').html();
-        const cost = $('dt:contains("コスト")').next('dd').find('p').html();
-        const power = $('dt:contains("パワー")').next('dd').find('p').html();
-
-        const effect = $('dt:contains("テキスト")').next('dd').find('p').html() || '';
+        const effect = $('dt:contains("テキスト")').next('dd').find('p').html();
         const effectList = effect.replace(/<br\s*\/?>/gi, '\n').trim();
         const [effect1, effect2, effect3] = effectList.split('\n');
 
         return {
             "卡號": cardNumber,
-            "卡名": cardName,
+            "卡名": $('.item-Heading').text().trim(),
             "圖": cardP,
-            "色": color,
-            "等級": cardLvl,
-            "費用": cost,
-            "攻擊力": power,
+            "色": $('img.color').attr('alt'),
+            "等級": $('dt:contains("レベル")').next('dd').find('p').html(),
+            "費用": $('dt:contains("コスト")').next('dd').find('p').html(),
+            "攻擊力": $('dt:contains("パワー")').next('dd').find('p').html(),
             "效果1": effect1,
             "效果2": effect2,
             "效果3": effect3
         };
     } catch (e) {
-        return null;
+        check = false;
+        return;
     }
 }
 
@@ -54,7 +48,7 @@ async function scrapeAllCards() {
         if (card && check) cards.push(card);
     }
 
-    await writeFile('cards.json', JSON.stringify(cards, null, 2));
+    await writeFile(`cards${title}.json`, JSON.stringify(cards, null, 2));
     console.log('done');
 }
 
