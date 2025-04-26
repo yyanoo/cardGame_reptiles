@@ -35,7 +35,7 @@ async function scrapeCardInfo(n) {
         };
     } catch (e) {
         console.error(`Error at card ${n}:`, e.message);
-        return;
+        return null;
     }
 }
 
