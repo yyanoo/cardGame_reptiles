@@ -2,7 +2,7 @@ import axios from 'axios';
 import { load } from 'cheerio';
 import { writeFile } from 'fs/promises';
 
-const title = '02'; //系列號
+const title = ''; //系列號  OS{title}/R{title}-{n}
 
 //抓資料
 async function scrapeCardInfo(n) {
@@ -11,12 +11,14 @@ async function scrapeCardInfo(n) {
         const { data: html } = await axios.get(url);
         const $ = load(html);
 
+        //判斷是否有該卡號
         const cardId = pdd('dt:contains("カード番号")');
         if (!cardId) {
             console.error(`Error at card OS01/R01-${n}:`, e.message);
             return null;
         }
 
+        //一般 dd 裏的 p
         function pdd(target) {
             return $(target)
                 .next('dd')
@@ -24,7 +26,7 @@ async function scrapeCardInfo(n) {
                 .html();
         }
 
-
+        //顔色+魂刻 alt
         function img(target) {
             return $(target)
                 .next('dd')
@@ -46,11 +48,12 @@ async function scrapeCardInfo(n) {
             .find('img')
             .length);
 
-        //效果分段
+        //效果br
         const effect = $('dt:contains("テキスト")').next('dd').find('p').html();
         const effectList = effect.replace(/<br\s*\/?>/gi, '\n').trim();
         const [effect1, effect2, effect3] = effectList.split('\n');
 
+        //回傳資料
         return{
             "卡號": cardId,
             "卡名": cardName,
@@ -71,7 +74,8 @@ async function scrapeCardInfo(n) {
     }
 }
 
-//資料存到cards 後轉json
+//資料存cards轉Json 更改系列到上 title
+
 async function scrapeAllCards() {
     const cards = [];
 
