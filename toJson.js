@@ -2,28 +2,29 @@ import axios from 'axios';
 import { load } from 'cheerio';
 import { writeFile } from 'fs/promises';
 
-const title = '01';
+const title = '02'; //系列號
 
+//抓資料
 async function scrapeCardInfo(n) {
     try {
         const url = `https://ws-rose.com/cardlist/?cardno=OS${title}/R${title}-${n}`;
-        const cardP = `https://ws-rose.com/wordpress/wp-content/images/cardlist/os${title}/r${title}/os${title}_r${title}_${n}.png`;
-
         const { data: html } = await axios.get(url);
         const $ = load(html);
 
-        const cardNumber = $('dt:contains("カード番号")').next('dd').find('p').html();
-        if (!cardNumber) {
-            check = false;
+        const cardId = $('dt:contains("カード番号")').next('dd').find('p').html();
+        if(!cardId){
+            return null;
         }
+
+        //效果分段
         const effect = $('dt:contains("テキスト")').next('dd').find('p').html();
         const effectList = effect.replace(/<br\s*\/?>/gi, '\n').trim();
         const [effect1, effect2, effect3] = effectList.split('\n');
 
         return {
-            "卡號": cardNumber,
-            "卡名": $('.item-Heading').text().trim(),
-            "圖": cardP,
+            "卡號": cardId,
+            "卡名": $('.item-Heading').contents().not('span').text().trim(),
+            "圖": `https://ws-rose.com/wordpress/wp-content/images/cardlist/os${title}/r${title}/os${title}_r${title}_${n}.png`,
             "色": $('img.color').attr('alt'),
             "等級": $('dt:contains("レベル")').next('dd').find('p').html(),
             "費用": $('dt:contains("コスト")').next('dd').find('p').html(),
@@ -38,6 +39,7 @@ async function scrapeCardInfo(n) {
     }
 }
 
+//資料存到cards 後轉json
 async function scrapeAllCards() {
     const cards = [];
 
