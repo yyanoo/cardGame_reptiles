@@ -2,7 +2,7 @@ import axios from 'axios';
 import { load } from 'cheerio';
 import { writeFile } from 'fs/promises';
 
-const title = ''; //系列號  OS{title}/R{title}-{n}
+const title = ''; //系列號 只需要 title OS{title}/R{title}-{n}
 
 //抓資料
 async function scrapeCardInfo(n) {
@@ -18,7 +18,7 @@ async function scrapeCardInfo(n) {
             return null;
         }
 
-        //一般 dd 裏的 p
+        //dd 裏的 p
         function pdd(target) {
             return $(target)
                 .next('dd')
@@ -26,7 +26,7 @@ async function scrapeCardInfo(n) {
                 .html();
         }
 
-        //顔色+魂刻 alt
+        //顔色+魂刻 能抓兩個以上alt
         function img(target) {
             return $(target)
                 .next('dd')
