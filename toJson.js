@@ -2,8 +2,7 @@ import axios from 'axios';
 import { load } from 'cheerio';
 import { writeFile } from 'fs/promises';
 
-let check = true;
-const title = '02';
+const title = '01';
 
 async function scrapeCardInfo(n) {
     try {
@@ -34,7 +33,7 @@ async function scrapeCardInfo(n) {
             "效果3": effect3
         };
     } catch (e) {
-        check = false;
+        console.error(`Error at card ${n}:`, e.message);
         return;
     }
 }
@@ -42,10 +41,11 @@ async function scrapeCardInfo(n) {
 async function scrapeAllCards() {
     const cards = [];
 
-    for (let i = 1; check; i++) {
+    for (let i = 1; ; i++) {
         const padded = String(i).padStart(3, '0');
         const card = await scrapeCardInfo(padded);
-        if (card && check) cards.push(card);
+        if (!card) break;
+        cards.push(card);
     }
 
     await writeFile(`cards${title}.json`, JSON.stringify(cards, null, 2));
