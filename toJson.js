@@ -35,7 +35,7 @@ async function scrapeCardInfo(n) {
                 .get();
         }
         
-        //卡名
+        //卡名 去除span的片假名
         const cardName = $('.item-Heading')
             .contents()
             .not('span')
@@ -48,12 +48,12 @@ async function scrapeCardInfo(n) {
             .find('img')
             .length);
 
-        //效果br
+        //效果br來換行 并且分割成效果1,2,3
         const effect = $('dt:contains("テキスト")').next('dd').find('p').html();
         const effectList = effect.replace(/<br\s*\/?>/gi, '\n').trim();
         const [effect1, effect2, effect3] = effectList.split('\n');
 
-        //回傳資料
+        //回傳資料 到def
         return{
             "卡號": cardId,
             "卡名": cardName,
