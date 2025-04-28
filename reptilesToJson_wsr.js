@@ -26,15 +26,6 @@ async function scrapeCardInfo(n) {
                 .html();
         }
 
-        //顔色+魂刻 能抓兩個以上alt
-        function img(target) {
-            return $(target)
-                .next('dd')
-                .find('img')
-                .map((i, el) => $(el).attr('alt'))
-                .get();
-        }
-
         //卡名 去除span的片假名
         const cardName = $('.item-Heading')
             .contents()
@@ -48,25 +39,24 @@ async function scrapeCardInfo(n) {
             .find('img')
             .length);
 
-        //效果br來換行 并且分割成效果1,2,3
-        const effect = $('dt:contains("テキスト")').next('dd').find('p').html();
-        const effectList = effect.replace(/<br\s*\/?>/gi, '\n').trim();
-        const [effect1, effect2, effect3] = effectList.split('\n');
+        const effect = $('dt:contains("テキスト")').next('dd').find('p').html() || '';
+        const effectList = effect
+          .replace(/<br\s*\/?>/gi, '\n') // <br> 換成換行
+          .trim()
+          .split('\n') // 按換行分割
+          .filter(line => line.trim() !== ''); // 過濾掉空白行
 
         //回傳資料 到def
         return {
             "卡號": cardId,
             "卡名": cardName,
             "圖": `https://ws-rose.com${$('.thumbnail-Inner img').attr('src')}`,
-            "色": img('dt:contains("色")'),
-            "判定": img('dt:contains("トリガー")'),
+            "色": $('dt:contains("色")').next('dd').find('img').attr('alt'),
             "等級": pdd('dt:contains("レベル")'),
             "費用": pdd('dt:contains("コスト")'),
             "攻擊力": pdd('dt:contains("パワー")'),
             "魂": soul,
-            "效果1": effect1,
-            "效果2": effect2,
-            "效果3": effect3
+            "效果": effectList
         }
     } catch (e) {
         return null;
@@ -94,15 +84,6 @@ async function scrapeCardTdInfo(n) {
                 .html();
         }
 
-        //顔色+魂刻 能抓兩個以上alt
-        function img(target) {
-            return $(target)
-                .next('dd')
-                .find('img')
-                .map((i, el) => $(el).attr('alt'))
-                .get();
-        }
-
         //卡名 去除span的片假名
         const cardName = $('.item-Heading')
             .contents()
@@ -116,25 +97,24 @@ async function scrapeCardTdInfo(n) {
             .find('img')
             .length);
 
-        //效果br來換行 并且分割成效果1,2,3
-        const effect = $('dt:contains("テキスト")').next('dd').find('p').html();
-        const effectList = effect.replace(/<br\s*\/?>/gi, '\n').trim();
-        const [effect1, effect2, effect3] = effectList.split('\n');
+        const effect = $('dt:contains("テキスト")').next('dd').find('p').html() || '';
+        const effectList = effect
+          .replace(/<br\s*\/?>/gi, '\n') // <br> 換成換行
+          .trim()
+          .split('\n') // 按換行分割
+          .filter(line => line.trim() !== ''); // 過濾掉空白行
 
         //回傳資料 到def
         return {
             "卡號": cardId,
             "卡名": cardName,
             "圖": `https://ws-rose.com${$('.thumbnail-Inner img').attr('src')}`,
-            "色": img('dt:contains("色")'),
-            "判定": img('dt:contains("トリガー")'),
+            "色": $('dt:contains("色")').next('dd').find('img').attr('alt'),
             "等級": pdd('dt:contains("レベル")'),
             "費用": pdd('dt:contains("コスト")'),
             "攻擊力": pdd('dt:contains("パワー")'),
             "魂": soul,
-            "效果1": effect1,
-            "效果2": effect2,
-            "效果3": effect3
+            "效果": effectList
         }
     } catch (e) {
         return null;
@@ -162,15 +142,6 @@ async function scrapeCardPrInfo(n) {
                 .html();
         }
 
-        //顔色+魂刻 能抓兩個以上alt
-        function img(target) {
-            return $(target)
-                .next('dd')
-                .find('img')
-                .map((i, el) => $(el).attr('alt'))
-                .get();
-        }
-
         //卡名 去除span的片假名
         const cardName = $('.item-Heading')
             .contents()
@@ -184,25 +155,24 @@ async function scrapeCardPrInfo(n) {
             .find('img')
             .length);
 
-        //效果br來換行 并且分割成效果1,2,3
-        const effect = $('dt:contains("テキスト")').next('dd').find('p').html();
-        const effectList = effect.replace(/<br\s*\/?>/gi, '\n').trim();
-        const [effect1, effect2, effect3] = effectList.split('\n');
+        const effect = $('dt:contains("テキスト")').next('dd').find('p').html() || '';
+        const effectList = effect
+          .replace(/<br\s*\/?>/gi, '\n') // <br> 換成換行
+          .trim()
+          .split('\n') // 按換行分割
+          .filter(line => line.trim() !== ''); // 過濾掉空白行
 
         //回傳資料 到def
         return {
             "卡號": cardId,
             "卡名": cardName,
             "圖": `https://ws-rose.com${$('.thumbnail-Inner img').attr('src')}`,
-            "色": img('dt:contains("色")'),
-            "判定": img('dt:contains("トリガー")'),
+            "色": $('dt:contains("色")').next('dd').find('img').attr('alt'),
             "等級": pdd('dt:contains("レベル")'),
             "費用": pdd('dt:contains("コスト")'),
             "攻擊力": pdd('dt:contains("パワー")'),
             "魂": soul,
-            "效果1": effect1,
-            "效果2": effect2,
-            "效果3": effect3
+            "效果": effectList
         }
     } catch (e) {
         return null;
