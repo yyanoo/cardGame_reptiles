@@ -105,7 +105,7 @@ async function scrapeAllCards() {
 
     for (let i = 1; ; i++) {
         const card = await scrapeCardInfo_holo(i);
-        if (i >= 100) break;
+        if (!cards) break;
         cards.push(card);
     }
 
